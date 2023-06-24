@@ -63,7 +63,7 @@ public class QualifierAnnotationDependencyInjectionDemo {
 
     @Bean
     @Qualifier // 进行逻辑分组
-    public User user1() {
+    public static User user1() {
         return createUser(7L);
     }
 
