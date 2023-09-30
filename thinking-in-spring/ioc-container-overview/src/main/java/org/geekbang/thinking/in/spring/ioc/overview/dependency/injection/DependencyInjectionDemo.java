@@ -40,23 +40,28 @@ public class DependencyInjectionDemo {
 
         // 依赖来源一：自定义 Bean
         UserRepository userRepository = applicationContext.getBean("userRepository", UserRepository.class);
+        System.out.println(userRepository.getUsers());
 
-//        System.out.println(userRepository.getUsers());
-
-        // 依赖来源二：依赖注入（內建依赖）
+        // 依赖来源二：依赖注入（ 內建非 Bean 对象（依赖））
         System.out.println(userRepository.getBeanFactory());
 
-
         ObjectFactory userFactory = userRepository.getObjectFactory();
-
         System.out.println(userFactory.getObject() == applicationContext);
 
-        // 依赖查找（错误）
+        /**
+         * 依赖查找（错误），思考：为什么上面依赖注入可以，这里依赖查找报错
+         * 依赖查找和依赖注入都属于依赖，这个依赖它是不是来自于同一个地方，答案肯定是否定的，从此处可以看的出来，beanFactory 并不是一个
+         * 普通的bean,其实是我们的内建依赖，他就是非Spring的Bean。
+         * 这里可以得出一个结论：
+         * 依赖大致可以分为两类，一个是普通的Bean ,第二种方式是非Bean
+         */
 //        System.out.println(beanFactory.getBean(BeanFactory.class));
 
         // 依赖来源三：容器內建 Bean
         Environment environment = applicationContext.getBean(Environment.class);
         System.out.println("获取 Environment 类型的 Bean：" + environment);
+
+        whoIsIoCContainer(userRepository,applicationContext);
     }
 
     private static void whoIsIoCContainer(UserRepository userRepository, ApplicationContext applicationContext) {
@@ -68,6 +73,7 @@ public class DependencyInjectionDemo {
 
 
         // 这个表达式为什么不会成立
+        BeanFactory beanFactory = userRepository.getBeanFactory();
         System.out.println(userRepository.getBeanFactory() == applicationContext);
 
         // ApplicationContext is BeanFactory
